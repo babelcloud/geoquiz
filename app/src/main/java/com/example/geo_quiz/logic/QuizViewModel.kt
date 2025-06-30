@@ -14,7 +14,8 @@ data class QuizUiState(
     val selectedAnswer: String? = null,
     val isAnswerCorrect: Boolean? = null,
     val quizFinished: Boolean = false,
-    val quizStarted: Boolean = false
+    val quizStarted: Boolean = false,
+    val currentTopic: String? = null
 )
 
 class QuizViewModel : ViewModel() {
@@ -22,15 +23,24 @@ class QuizViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
-    private var questions: List<Question> = QuizData.questions.shuffled()
+    private var questions: List<Question> = emptyList()
+
+    fun setTopic(topic: String) {
+        _uiState.update { it.copy(currentTopic = topic) }
+    }
 
     fun startQuiz() {
-        questions = QuizData.questions.shuffled()
+        val topic = _uiState.value.currentTopic ?: return // Should not happen
+        questions = QuizData.getQuestions(topic).shuffled()
         _uiState.update { it.copy(quizStarted = true, quizFinished = false, score = 0, currentQuestionIndex = 0, selectedAnswer = null, isAnswerCorrect = null) }
     }
 
     fun getCurrentQuestion(): Question {
         return questions[_uiState.value.currentQuestionIndex]
+    }
+
+    fun getTotalQuestions(): Int {
+        return questions.size
     }
 
     fun selectAnswer(answer: String) {
@@ -62,5 +72,9 @@ class QuizViewModel : ViewModel() {
 
     fun retryQuiz() {
         startQuiz()
+    }
+
+    fun backToTopicSelection() {
+        _uiState.update { QuizUiState() }
     }
 } 
