@@ -14,6 +14,7 @@ alwaysApply: false
   You can pass the parameter `open=true` to automatically launch the app after installation.
 - If multiple boxes are running, ensure you're **only operating on the correct box** for your current test session.
 - Use MCP Tool adb_shell to execute adb shell in log watching or other infomation obtaining.
+- Use MCP Tool logcat to get the log of the app.
 - Do not try to exec adb command in Terminal, because the Android box is running on cloud, there is no adb connection locally.
 ---
 
